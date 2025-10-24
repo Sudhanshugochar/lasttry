@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sikkim Live Weather</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .weather-container {
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: #e0f7fa; 
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 51, 102, 0.2);
+            text-align: center;
+        }
+        .weather-container h1 {
+            color: #003366;
+            margin-bottom: 1.5rem;
+        }
+        #weather-widget-container {
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 51, 102, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Monastery Portal</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="weather.html">Weather</a></li>
+            <li><a href="fest_calendar.html">Fest Calendar</a></li>
+            <li><a href="#">Upload Pic</a></li>
+            <li><a href="#">Q & A</a></li>
+            <li><a href="index.html#contactForm">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="weather-container">
+        <h1>Live Weather in Gangtok, Sikkim</h1>
+        
+        <div id="weather-widget-container">
+            <div id="weatherapi-weather-widget-3"></div>
+            <script type='text/javascript' src='https://www.weatherapi.com/weather/widget.ashx?loc=1114329&wid=3&tu=1&div=weatherapi-weather-widget-3' async></script>
+            <noscript><a href="https://www.weatherapi.com/weather/q/gangtok-1114329" alt="Hour by hour Gangtok weather">10 day hour by hour Gangtok weather</a></noscript>
+        </div>
+        
+        <p style="font-size: 0.9rem; color: #888; margin-top: 1.5rem;">Data powered by WeatherAPI.com.</p>
+    </div>
+
+</body>
+</html>

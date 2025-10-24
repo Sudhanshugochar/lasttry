@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="detailPageTitle">Monastery Details</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .detail-container {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .detail-container h1 {
+            color: #00264d;
+            border-bottom: 2px solid #ffcc00;
+            padding-bottom: 10px;
+            margin-bottom: 1.5rem;
+        }
+        .detail-container img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #003366;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 10px 15px;
+            background: #003366;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        /* Style for the dynamic details */
+        #dynamicName {
+            color: #ffcc00;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Monastery Portal</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Weather</a></li>
+            <li><a href="#">Fest Calendar</a></li>
+            <li><a href="#">Upload Pic</a></li>
+            <li><a href="#">Q & A</a></li>
+            <li><a href="index.html#contactForm">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="detail-container">
+        <h1>Details for <span id="dynamicName">...</span></h1>
+        
+        <img id="monasteryImage" src="placeholder.jpg" alt="Monastery Photo">
+
+        <div class="info-section">
+            <div class="info-label">Location:</div>
+            <div id="dynamicLocation"></div>
+            
+            <div class="info-label">Founded:</div>
+            <div id="dynamicFounded"></div>
+            
+            <div class="info-label">Significance:</div>
+            <div id="dynamicSignificance"></div>
+        </div>
+
+        <h2>History & Description</h2>
+        <p id="dynamicDescription"></p>
+
+        <a href="results.html" class="back-link">← Back to Results</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const monasteryName = decodeURIComponent(urlParams.get('name'));
+
+            document.getElementById('dynamicName').textContent = monasteryName;
+            document.getElementById('detailPageTitle').textContent = monasteryName + " Details";
+
+            // --- Define Detailed Data ---
+            const details = {
+                "Rumtek Monastery": {
+                    location: "Rumtek, East Sikkim (24 km from Gangtok)",
+                    founded: "1960s (new monastery, built after the 16th Karmapa fled Tibet)",
+                    significance: "The main seat and spiritual headquarters of the Karma Kagyu lineage of Tibetan Buddhism in India.",
+                    description: "Rumtek is arguably the most famous and largest monastery in Sikkim. It was established by the 16th Karmapa, Rigpe Dorje, to preserve the lineage's spiritual and cultural traditions outside of Tibet. The main complex includes a large, richly decorated temple and the Golden Stupa, which contains the relics of the 16th Karmapa.",
+                    imageUrl: "https://www.karmapa.org/wp-content/uploads/Rumtek_Monastery_-_Inside_Close_View-1400px-cropped.jpg"
+                },
+                "Pemayangtse Monastery": {
+                    location: "Pelling, West Sikkim (140 km from Gangtok)",
+                    founded: "1705, by Lama Lhatsun Chempo",
+                    significance: "One of the oldest and premier monasteries of the Nyingma order. Historically, it was reserved only for 'pure' monks of Tibetan lineage.",
+                    description: "Pemayangtse translates to 'Perfect Sublime Lotus'. It is a three-storied structure that houses a spectacular collection of sculptures and ancient manuscripts. Its most famous feature is the seven-tiered wooden sculpture on the top floor depicting the heavenly palace of Guru Rimpoche (Zangdok Palri).",
+                    imageUrl: "https://adventuresindbad.com/wp-content/uploads/2019/04/LogoLicious_20190414_103925.png"
+                },
+                "Tashiding Monastery": {
+                    location: "Tashiding, West Sikkim (near Yuksam)",
+                    founded: "1641, by Ngadak Sempa Chempo",
+                    significance: "Considered the most sacred chorten (stupa) in Sikkim, believed to wash away all sins upon viewing. Part of the 'Buddhist Religious Pilgrimage Circuit'.",
+                    description: "Perched atop a heart-shaped hill, Tashiding holds immense spiritual importance. The monastery hosts the highly revered Bumchu festival (Festival of the Sacred Vase). The complex is surrounded by numerous chortens, including the 'Thong-Wa-Rang-Dol', which is believed to grant salvation simply by sight.",
+                    imageUrl: "https://travelsetu.com/apps/uploads/new_destinations_photos/destination/2023/12/12/ae4b46d50598b5ab7d3ec2ea2841bf7e_1000x1000.jpg"
+                },
+                "Enchey Monastery": {
+                    location: "Gangtok, East Sikkim (3 km from the main town)",
+                    founded: "Early 20th Century (rebuilt), site blessed in the mid-17th century",
+                    significance: "A center of the Nyingma order, believed to be protected by the deities Khangchendzonga and Yabdean. 'Enchey' means 'Solitary Temple'.",
+                    description: "Enchey Monastery is an important seat located on a ridge high above the capital city. The architecture is distinctive, featuring a pagoda-style roof. Inside, the walls are covered with bright murals and a large collection of masks used for the 'Chaam' (mask dance) festival.",
+                    imageUrl: "https://www.t2india.com/Images/places/GTK/Attractions/EMG_1.jpg"
+                },
+                "Phodong Monastery": {
+                    location: "Phodong, North Sikkim (approx. 38 km from Gangtok)",
+                    founded: "Early 18th century, by the Chogyal Gyurmed Namgyal",
+                    significance: "One of the six most important monasteries in Sikkim and a major center of the Kagyu sect.",
+                    description: "Phodong Monastery is renowned for its beautiful original murals and religious paintings. It houses a significant collection of ancient thangkas and scriptures. The monastery was rebuilt in the early 20th century but retains its traditional architectural charm and spiritual ambiance.",
+                    imageUrl: "https://www.tourmyindia.com/states/sikkim/images/phodong-monastery1.jpg"
+                },
+                "Sanga Choeling Monastery": {
+                    location: "Pelling, West Sikkim (accessible by a 45-minute trek)",
+                    founded: "1697, by Lama Lhatsun Chempo",
+                    significance: "Translates to 'Island of the Secret Spell'. It is one of the oldest monasteries in Sikkim, reserved for men only.",
+                    description: "Established for monks of pure Tibetan descent, this monastery is situated on a high ridge offering breathtaking views of Mount Kanchenjunga. It is a sacred place for pilgrimage and meditation, and its remote location adds to its spiritual serenity. The original structure was damaged by fire and has been rebuilt.",
+                    imageUrl: "https://www.esikkimtourism.in/wp-content/uploads/2018/03/sanga-choeling-monastery-pelling.jpg"
+                },
+                "Dubdi Monastery": {
+                    location: "Yuksom, West Sikkim (a 1-hour trek from Yuksom)",
+                    founded: "1701",
+                    significance: "Also known as the 'Hermit's Cell', it is widely considered to be the first and oldest monastery established in Sikkim.",
+                    description: "Dubdi Monastery was founded shortly after the coronation of the first Chogyal of Sikkim. It is a two-storied stone building and a revered site for the Nyingma sect. The trek to the monastery through dense forest is a spiritual experience in itself, leading to a place of profound historical and religious importance.",
+                    imageUrl: "https://www.tourmyindia.com/states/sikkim/images/dubdi-monastery1.jpg"
+                },
+                "Lingdum Monastery (Ranka)": {
+                    location: "Ranka, East Sikkim (approx. 20 km from Gangtok)",
+                    founded: "1999",
+                    significance: "A large, modern monastery that serves as a major center for the Zurmang Kagyu lineage of Tibetan Buddhism.",
+                    description: "Also known as the Pal Zurmang Kagyud Lingdum, this monastery is a relatively new but vast and impressive complex. It is known for its serene atmosphere, intricate architecture, and a large courtyard where monks perform their rituals. The monastery also serves as an institute for higher Buddhist studies.",
+                    imageUrl: "https://live.staticflickr.com/835/43126588804_5b508f7f18_b.jpg"
+                },
+                "Do Drul Chorten": {
+                    location: "Gangtok, East Sikkim",
+                    founded: "1945, by Trulshik Rinpoche",
+                    significance: "A prominent stupa complex in Gangtok, believed to protect the city from evil spirits.",
+                    description: "The Do Drul Chorten is a large, white stupa topped with a golden dome. It is encircled by 108 prayer wheels (Mani Lhakor), which devotees turn while chanting mantras. The complex also houses several other smaller stupas and religious artifacts, making it a major landmark and a peaceful place for reflection in the capital city.",
+                    imageUrl: "https://www.holidify.com/images/cmsuploads/compressed/56_20191122144747.jpg"
+                }
+            };
+
+            // --- Populate the page with data ---
+            const data = details[monasteryName];
+
+            if (data) {
+                document.getElementById('dynamicLocation').textContent = data.location;
+                document.getElementById('dynamicFounded').textContent = data.founded;
+                document.getElementById('dynamicSignificance').textContent = data.significance;
+                document.getElementById('dynamicDescription').textContent = data.description;
+                document.getElementById('monasteryImage').src = data.imageUrl;
+            } else {
+                document.getElementById('dynamicLocation').textContent = "Details not available.";
+                document.getElementById('dynamicFounded').textContent = "N/A";
+                document.getElementById('dynamicSignificance').textContent = "N/A";
+                document.getElementById('dynamicDescription').textContent = "No specific details found for this monastery. Please check the spelling or return to the results page.";
+                document.getElementById('monasteryImage').alt = "Details not found";
+                document.getElementById('monasteryImage').src = "placeholder.jpg"; // Reset image if missing
+            }
+        });
+    </script>
+
+</body>
+</html>

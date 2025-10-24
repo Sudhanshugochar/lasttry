@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sikkim Festival Calendar</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific Styles for the Festival Calendar */
+        .calendar-container {
+            max-width: 1000px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .calendar-container h1 {
+            color: #00264d;
+            border-bottom: 2px solid #ffcc00;
+            padding-bottom: 10px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #003366;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+        .calendar-header button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .day-name {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            padding: 10px 5px;
+            color: #333;
+            border-bottom: 1px solid #ccc;
+        }
+        .date-cell {
+            padding: 15px 5px;
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            min-height: 50px;
+            position: relative;
+            font-size: 0.9rem;
+            cursor: default;
+        }
+        .date-cell.highlight {
+            background-color: #fffacd; /* Light Gold */
+            color: #003366;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .date-cell.highlight:hover {
+            background-color: #ffe082; /* Darker Gold on hover */
+        }
+        .date-cell .date-number {
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .date-cell .festival-label {
+            font-size: 0.75rem;
+            color: #cc0000;
+            display: block;
+            line-height: 1.2;
+            padding: 2px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .current-month-view {
+            font-size: 1.5rem;
+        }
+        /* Style for the Modal (Popup) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Monastery Portal</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="weather.html">Weather</a></li>
+            <li><a href="fest_calendar.html">Fest Calendar</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="#">Q & A</a></li>
+            <li><a href="index.html#contactForm">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="calendar-container">
+        <h1>Sikkim Festival Calendar</h1>
+        <p style="text-align: center; margin-bottom: 2rem; color: #555;">Navigate through the months to see approximate festival dates.</p>
+        
+        <div class="calendar-header">
+            <button onclick="prevMonth()">&#9664;</button>
+            <span id="currentMonthYear" class="current-month-view"></span>
+            <button onclick="nextMonth()">&#9654;</button>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid">
+            <div class="day-name">Sun</div>
+            <div class="day-name">Mon</div>
+            <div class="day-name">Tue</div>
+            <div class="day-name">Wed</div>
+            <div class="day-name">Thu</div>
+            <div class="day-name">Fri</div>
+            <div class="day-name">Sat</div>
+            </div>
+
+    </div>
+
+    <div id="festivalModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalFestName" style="color: #003366;"></h2>
+            <p><strong style="color: #cc0000;">Date:</strong> <span id="modalFestDate"></span></p>
+            <p><strong>Significance:</strong> <span id="modalFestSignificance"></span></p>
+            <p><strong>Rituals:</strong> <span id="modalFestRituals"></span></p>
+            <a id="modalFestLink" href="#" style="color: #ffcc00; font-weight: bold; display: block; margin-top: 10px;">Read More Details →</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Ministries Portal. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Data structure matching the old static links
+        const FESTIVAL_DATA = [
+            { name: "Losar (Tibetan New Year)", month: 2, approxDate: 15, significance: "Tibetan New Year. Celebration for spiritual and social renewal.", rituals: "Masked dances (Chaam) and family feasts.", link: "festival_detail.html?name=Losar" },
+            { name: "Saga Dawa", month: 5, approxDate: 23, significance: "Birth, enlightenment, and nirvana of Lord Buddha.", rituals: "Religious procession and lighting butter lamps.", link: "festival_detail.html?name=Saga Dawa" },
+            { name: "Lhabab Düchen", month: 10, approxDate: 28, significance: "Commemorates Lord Buddha's descent from Tushita heaven.", rituals: "Special prayers and amplified virtuous deeds.", link: "festival_detail.html?name=Lhabab Düchen" },
+            { name: "Pang Lhabsol", month: 8, approxDate: 20, significance: "Worshipping Mount Khangchendzonga, the guardian deity.", rituals: "Spectacular warrior dance (Pangtoed Chaam).", link: "festival_detail.html?name=Pang Lhabsol" },
+            { name: "Bumchu Festival", month: 2, approxDate: 10, significance: "Predicting the state's prosperity based on sacred vase water level.", rituals: "Sacred vase opening and holy water distribution.", link: "festival_detail.html?name=Bumchu Festival" }
+        ];
+        
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+                            "July", "August", "September", "October", "November", "December"];
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const header = document.getElementById('currentMonthYear');
+            
+            while (grid.children.length > 7) {
+                grid.removeChild(grid.lastChild);
+            }
+
+            header.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'date-cell';
+                grid.appendChild(cell);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'date-cell';
+                cell.innerHTML = `<span class="date-number">${day}</span>`;
+                cell.dataset.day = day;
+
+                const matchingFestivals = FESTIVAL_DATA.filter(fest => 
+                    fest.month === (currentMonth + 1) && fest.approxDate === day
+                );
+
+                if (matchingFestivals.length > 0) {
+                    cell.classList.add('highlight');
+                    cell.onclick = () => showModal(day, matchingFestivals);
+                    
+                    matchingFestivals.forEach(fest => {
+                        const label = document.createElement('span');
+                        label.className = 'festival-label';
+                        label.textContent = fest.name;
+                        cell.appendChild(label);
+                    });
+                }
+                
+                grid.appendChild(cell);
+            }
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        function showModal(day, festivals) {
+            const fest = festivals[0]; 
+            
+            document.getElementById('modalFestName').textContent = fest.name;
+            document.getElementById('modalFestDate').textContent = `${monthNames[currentMonth]} ${day}`;
+            document.getElementById('modalFestSignificance').textContent = fest.significance;
+            document.getElementById('modalFestRituals').textContent = fest.rituals;
+            document.getElementById('modalFestLink').href = fest.link;
+
+            document.getElementById('festivalModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('festivalModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('festivalModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        renderCalendar();
+    </script>
+    
+    </body>
+</html>
